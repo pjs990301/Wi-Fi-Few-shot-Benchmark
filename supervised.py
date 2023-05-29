@@ -3,6 +3,7 @@ import torch
 def train(model, tensor_loader, num_epochs, learning_rate, criterion, device):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
     for epoch in range(num_epochs):
         model.train()
         epoch_loss = 0
@@ -31,7 +32,8 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device):
             epoch_accuracy += (predict_y == labels.to(device)).sum().item() / labels.size(0)
         epoch_loss = epoch_loss / len(tensor_loader.dataset)
         epoch_accuracy = epoch_accuracy / len(tensor_loader)
-        print('Epoch:{}, Accuracy:{:.4f},Loss:{:.9f}'.format(epoch + 1, float(epoch_accuracy), float(epoch_loss)))
+        optimizer.step()
+        print('Epoch:{}, Accuracy:{:.5f},Loss:{:.9f}'.format(epoch + 1, float(epoch_accuracy), float(epoch_loss)))
     return
 
 
@@ -49,8 +51,7 @@ def test(model, tensor_loader, criterion, device):
         # print(inputs)
         # print(labels)
         # print(inputs.shape)
-
-
+        
         outputs = model(inputs)
         outputs = outputs.type(torch.FloatTensor)
         outputs.to(device)
@@ -63,5 +64,5 @@ def test(model, tensor_loader, criterion, device):
 
     test_acc = test_acc / len(tensor_loader)
     test_loss = test_loss / len(tensor_loader.dataset)
-    print("validation accuracy:{:.4f}, loss:{:.5f}".format(float(test_acc), float(test_loss)))
+    print("validation accuracy:{:.5f}, loss:{:.9f}".format(float(test_acc), float(test_loss)))
     return
