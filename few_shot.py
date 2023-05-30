@@ -82,7 +82,7 @@ def test(model, test_x, test_y, n_way, n_support, n_query, test_episode, device)
             for label, q_samples in enumerate(query_samples):
                 for i in range(0, len(q_samples) // n_way):
                     output = model.proto_test(q_samples[i * n_way:(i + 1) * n_way], z_proto, n_way, label)
-                    # print(output)
+                    print(output)
                     a = output['y_hat'].cpu().int()
                     for cls in range(n_way):
                         conf_mat[cls, :] = conf_mat[cls, :] + torch.bincount(a[cls, :], minlength=n_way)

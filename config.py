@@ -17,7 +17,7 @@ param = {
     'test_labels': ['empty', 'jump', 'stand', 'walk'],
 
     # model
-    'max_epoch' : 10,
-    'epoch_size' : 1000,
+    'max_epoch' : 7,
+    'epoch_size' : 500,
     'lr': 0.0001
 }
