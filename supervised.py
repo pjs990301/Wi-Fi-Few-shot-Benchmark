@@ -3,7 +3,10 @@ import torch
 def train(model, tensor_loader, num_epochs, learning_rate, criterion, device):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+    accuracy_history = []  # Accuracy 기록을 위한 리스트
+    loss_history = []  # Loss 기록을 위한 리스트
+
     for epoch in range(num_epochs):
         model.train()
         epoch_loss = 0
@@ -17,8 +20,8 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device):
             labels = labels.to(device)
             labels = labels.type(torch.LongTensor)
             
-            # print(inputs.shape)
-
+            print(inputs.shape)
+            
             optimizer.zero_grad()
             outputs = model(inputs)
             outputs = outputs.to(device)
@@ -30,11 +33,15 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device):
             epoch_loss += loss.item() * inputs.size(0)
             predict_y = torch.argmax(outputs, dim=1).to(device)
             epoch_accuracy += (predict_y == labels.to(device)).sum().item() / labels.size(0)
+
         epoch_loss = epoch_loss / len(tensor_loader.dataset)
         epoch_accuracy = epoch_accuracy / len(tensor_loader)
+        accuracy_history.append(epoch_accuracy)
+        loss_history.append(epoch_loss)
         optimizer.step()
         print('Epoch:{}, Accuracy:{:.5f},Loss:{:.9f}'.format(epoch + 1, float(epoch_accuracy), float(epoch_loss)))
-    return
+
+    return accuracy_history, loss_history
 
 
 def test(model, tensor_loader, criterion, device):
@@ -65,4 +72,4 @@ def test(model, tensor_loader, criterion, device):
     test_acc = test_acc / len(tensor_loader)
     test_loss = test_loss / len(tensor_loader.dataset)
     print("validation accuracy:{:.5f}, loss:{:.9f}".format(float(test_acc), float(test_loss)))
-    return
+    return test_acc, test_loss

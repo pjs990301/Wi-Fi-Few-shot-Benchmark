@@ -4,6 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from einops import rearrange, reduce, repeat
 from einops.layers.torch import Rearrange, Reduce
+from torchinfo import summary
+import torchsummary 
 
 class ReWiS_LeNet(nn.Module):
     def __init__(self):
@@ -11,13 +13,13 @@ class ReWiS_LeNet(nn.Module):
         self.encoder = nn.Sequential(
             nn.Conv2d(1, 32, 7, stride=(3, 1)),
             nn.ReLU(True),
-            nn.MaxPool2d(2),
+            nn.AvgPool2d(2),
             nn.Conv2d(32, 64, (5, 4), stride=(2, 2), padding=(1, 0)),
             nn.ReLU(True),
-            nn.MaxPool2d(2),
+            nn.AvgPool2d(2),
             nn.Conv2d(64, 96, (3, 3), stride=1),
             nn.ReLU(True),
-            nn.MaxPool2d(2)
+            nn.AvgPool2d(2)
         )
 
         self.fc = nn.Sequential(
@@ -285,3 +287,19 @@ class ReWiS_ViT(nn.Module):
         x = self.fc(x)
 
         return x
+
+
+if __name__ == "__main__" :
+    model = ReWiS_ViT(
+        in_channels=1,  # 입력 채널 수
+        patch_size=[22, 242],  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
+        embed_dim=64,  # 임베딩 차원
+        num_layers=12,  # Transformer 블록 수
+        num_heads=8,  # 멀티헤드 어텐션에서의 헤드 수
+        mlp_dim=4,  # MLP의 확장 비율
+        num_classes=4,  # 분류할 클래스 수
+        in_size=[242, 242]  # 입력 이미지 크기 (가로, 세로)
+    ).to("cuda")
+    input_size = (1,242,242)
+    # print(summary(model, input_size = input_size))
+    print(torchsummary.summary(model, input_size = input_size))

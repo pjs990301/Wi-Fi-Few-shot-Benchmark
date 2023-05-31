@@ -19,13 +19,15 @@ class ProtoNet(nn.Module):
         self.encoder = encoder.cuda(0)
 
     def proto_train(self, sample):
+        
         """
-                Computes loss, accuracy and output for classification task
+            Computes loss, accuracy and output for classification task
                 Args:
                     sample (torch.Tensor): shape (n_way, n_support+n_query, (dim))
-                Returns:
-                    torch.Tensor: shape(2), loss, accuracy and y_hat
-                """
+            Returns:
+                torch.Tensor: shape(2), loss, accuracy and y_hat
+        """
+
         sample_images = sample['csi_mats'].cuda(0)
         n_way = sample['n_way']
         n_support = sample['n_support']
@@ -88,8 +90,8 @@ class ProtoNet(nn.Module):
         Modified
         # Separate support and query tensor
         '''
-        x_support = x_support.contiguous().view(n_way * n_support, *x_support.size()[2:])
 
+        x_support = x_support.contiguous().view(n_way * n_support, *x_support.size()[2:])
         z_support = self.encoder.forward(x_support)
         z_support_dim = z_support.size(-1)
         z_proto = z_support.view(n_way, n_support, z_support_dim).mean(1)
@@ -169,7 +171,7 @@ def load_protonet_vit():
 
     encoder = ReWiS_ViT(
         in_channels=1,  # 입력 채널 수
-        patch_size=[22, 22],  # 패치 크기 (가로, 세로)
+        patch_size=[22, 242],  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
         embed_dim=64,  # 임베딩 차원
         num_layers=12,  # Transformer 블록 수
         num_heads=8,  # 멀티헤드 어텐션에서의 헤드 수

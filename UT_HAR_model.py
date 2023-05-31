@@ -4,6 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from einops import rearrange, reduce, repeat
 from einops.layers.torch import Rearrange, Reduce
+from torchinfo import summary
+import torchsummary 
 
 class UT_HAR_LeNet(nn.Module):
     def __init__(self):
@@ -307,4 +309,9 @@ class UT_HAR_ViT(nn.Sequential):
             TransformerEncoder(depth, emb_size=emb_size, **kwargs),
             ClassificationHead(emb_size, n_classes)
         )
-        
+
+if __name__ == "__main__" :
+    model = UT_HAR_ViT().to("cuda")
+    input_size = (1,250,90)
+    # print(summary(model, input_size = input_size))
+    print(torchsummary.summary(model, input_size = input_size))
