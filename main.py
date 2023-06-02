@@ -12,7 +12,8 @@ import proto
 from config import param
 import os
 import pandas as pd
-
+from datetime import datetime
+import wandb 
 ''' 
 fix seed
 '''
@@ -24,13 +25,12 @@ cudnn.benchmark = False
 cudnn.deterministic = True
 random.seed(0)
 
-
-def main():
+if __name__ == "__main__":
     root = './Data'
     parser = argparse.ArgumentParser('WiFi Imaging Benchmark')
-    parser.add_argument('--dataset', choices=['UT_HAR', 'ReWiS', 'Home'])
-    parser.add_argument('--model',   choices=['LeNet', 'ResNet50',  'RNN', 'LSTM', 'BiLSTM','ViT'])
-    parser.add_argument('--learning', choices=['supervised', 'few-shot'], required=True)
+    parser.add_argument('--dataset', default = "ReWiS", choices=['UT_HAR', 'ReWiS', 'Home'])
+    parser.add_argument('--model', choices=['LeNet', 'ResNet50',  'RNN', 'LSTM', 'BiLSTM','ViT'])
+    parser.add_argument('--learning', default="few-shot", choices=['supervised', 'few-shot'])
     parser.add_argument('--split', default='F', choices=['T','F'])
     parser.add_argument('--epoch', default=200)
     # parser.add_argument('--MHz', default='80MHz')
@@ -44,10 +44,13 @@ def main():
     train_epoch = int(args.epoch)
     criterion = nn.CrossEntropyLoss()
 
+    now = str(datetime.now())
+
+
     # train_dir = args.train_env
     # test_dir = args.test_env
     # MHz = args.MHz
-
+    
     if args.learning == 'supervised':
         # if args.dataset == 'UT_HAR':
         #     train_loader, test_loader = load_UT_HAR_data(root)
@@ -149,37 +152,55 @@ def main():
                     num_classes=4,  # 분류할 클래스 수
                     in_size=[242, 242]  # 입력 이미지 크기 (가로, 세로)
             )
+    
+        wandb.init(
+                project="Meta-Transformer",
+                # group=self.config['fs_model'],
+                # group="Test Sweep",
+                group="Test Sweep ReWiS ProtoNet",
+                name=now,
+                notes= "train : few_shot_datasets/ReWis/m1c4_PCA_test_80/train_A\n" +
+                   "test : few_shot_datasets/ReWis/m1c4_PCA_test_80/test_A3",
+
+                # track hyperparameters and run metadata
+                config = {
+                "architecture": args.model,
+                "max_epoch": param['max_epoch'],
+                "epoch_size" : param['epoch_size']
+                }
+        )
+        w_config = wandb.config
         
-            
         print("train_way: " + str(param['train_way']))
-        print("train_support : " + str(param['train_support']))
-        print("train_query : " + str(param['train_query']))
+        print("train_support : " + str(w_config['train_support']))
+        print("train_query : " + str(w_config['train_query']))
+
         train_accuracy_history, train_loss_history = few_shot.train(
             model = model, 
             learning_rate=1e-3, 
             train_x = train_x, 
             train_y = train_y,
             n_way = param['train_way'],
-            n_support = param['train_support'], 
-            n_query = param['train_query'],
+            n_support = w_config['train_support'], 
+            n_query = w_config['train_query'],
             max_epoch = param['max_epoch'],
             epoch_size = param['epoch_size'],
-            device = device
+            device = device,
         )   
 
         print("test_way: " + str(param['test_way']))
-        print("test_support : " + str(param['test_support']))
-        print("test_query : " + str(param['test_query']))
+        print("test_support : " + str(w_config['test_support']))
+        print("test_query : " + str(w_config['test_query']))
 
         conf_mat, test_acc = few_shot.test(
             model = model,
             test_x = test_x,
             test_y = test_y,
             n_way = param['test_way'],
-            n_support = param['test_support'],
-            n_query = param['test_query'],
+            n_support = w_config['test_support'],
+            n_query = w_config['test_query'],
             test_episode = 1,
-            device = device
+            device = device,
         )
 
         # Result/learning/dataset/model_name/max_epoch/epoch_size/train.csv
@@ -188,8 +209,8 @@ def main():
         # model_out = f'Result/{args.learning}/{args.dataset}/{MHz}_{train_dir}_{test_dir}/{args.model}/train_s{param['train_support']}_train_q{param['train_query']}_test_s{param['test_support']}_test_q{param['test_query']}/{param['max_epoch']}_{param['epoch_size']}_{test_acc:.3f}/'
         model_out = (
                 f"Result/{args.learning}/{args.dataset}/{args.model}/"
-                f"train_s{param['train_support']}_train_q{param['train_query']}_"
-                f"test_s{param['test_support']}_test_q{param['test_query']}/"
+                f"train_s{w_config['train_support']}_train_q{w_config['train_query']}_"
+                f"test_s{w_config['test_support']}_test_q{w_config['test_query']}/"
                 f"{param['max_epoch']}_{param['epoch_size']}_{test_acc:.3f}/"
                 )
         print(model_out)
@@ -203,10 +224,7 @@ def main():
         test_history = pd.DataFrame({'Test Accuracy': [test_acc]})
         confusion_matrix = pd.DataFrame(conf_mat.numpy())
         
-        # train_history.to_csv(model_out+ 'train.csv', index=False)
-        # test_history.to_csv(model_out+ 'test.csv',index=False)
-        # confusion_matrix.to_csv(model_out+'confusion.csv', index=True)    
-        # torch.save(model.state_dict(),model_out + 'model.pt')
-
-if __name__ == "__main__":
-    main()
+        train_history.to_csv(model_out+ 'train.csv', index=False)
+        test_history.to_csv(model_out+ 'test.csv',index=False)
+        confusion_matrix.to_csv(model_out+'confusion.csv', index=True)    
+        torch.save(model.state_dict(),model_out + 'model.pt')

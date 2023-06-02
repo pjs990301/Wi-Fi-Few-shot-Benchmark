@@ -47,9 +47,9 @@ def train(model, learning_rate, train_x, train_y, n_way, n_support, n_query, max
         accuracy_history.append(epoch_acc)
         loss_history.append(epoch_loss)
 
-        print('Epoch {:d} -- Acc: {:.5f} Loss: {:.9f}'.format(epoch + 1, epoch_acc, epoch_loss))
 
-        # wandb.log({"acc": epoch_acc, "loss": epoch_loss})
+        print('Epoch {:d} -- Acc: {:.5f} Loss: {:.9f}'.format(epoch + 1, epoch_acc, epoch_loss))
+        wandb.log({"acc": epoch_acc, "loss": epoch_loss})
 
         epoch += 1
         scheduler.step()
@@ -108,4 +108,5 @@ def test(model, test_x, test_y, n_way, n_support, n_query, test_episode, device)
         print(conf_mat)
     avg_acc = running_acc / total_count
     print('Test results -- Acc: {:.5f}'.format(avg_acc))
+    wandb.log({"test_acc": avg_acc, "conf_mat" : conf_mat})
     return (conf_mat / (test_episode * n_query), avg_acc)

@@ -1,11 +1,10 @@
-commad :
+command :
   - python
   - main.py
-  - --learning few shot
-  - -- dataset ReWiS
 
 project : Meta-Transformer
 name: test sweep grid
+entity : pjs990301
 
 method : grid
 

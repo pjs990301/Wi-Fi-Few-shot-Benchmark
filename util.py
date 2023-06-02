@@ -72,7 +72,7 @@ def load_ReWiS_data(root):
     print('using dataset: ReWiS DATA')
     train_x, train_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/train_A1')
     train_x = np.expand_dims(train_x, axis=1)
-    test_x, test_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/test_A2')
+    test_x, test_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/test_A3')
     test_x = np.expand_dims(test_x, axis=1)
 
     label_encoder = LabelEncoder()
