@@ -3,7 +3,7 @@ import torch
 def train(model, tensor_loader, num_epochs, learning_rate, criterion, device):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
     accuracy_history = []  # Accuracy 기록을 위한 리스트
     loss_history = []  # Loss 기록을 위한 리스트
 
@@ -20,7 +20,7 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device):
             labels = labels.to(device)
             labels = labels.type(torch.LongTensor)
             
-            print(inputs.shape)
+            # print(inputs.shape)
             
             optimizer.zero_grad()
             outputs = model(inputs)

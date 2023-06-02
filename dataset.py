@@ -123,7 +123,7 @@ def read_csi_csv(base_directory, one_file=False):
 
         for f in files:
             df = pd.read_csv(os.path.join(base_directory, f))
-            total_len = len(df)
+            total_len = int(len(df)/2)
             div_num = total_len // 64
             label = f.split('_')[0]
             lables = [label for _ in range(div_num)]

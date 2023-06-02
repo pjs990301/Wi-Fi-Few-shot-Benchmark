@@ -17,11 +17,62 @@ def load_UT_HAR_data(root):
 
     return train_loader, test_loader
 
+'''
+def load_ReWiS_data(root, MHz, train_dir, test_dir):
+    print('using dataset: ReWiS DATA[MHz : {}, train: {}, test: {}]'.format(MHz, train_dir, test_dir))
+
+    train_x, train_y = read_csi_csv(root+"/few_shot_datasets/ReWiS_csv/" + MHz+ "/" + train_dir+"/" ,one_file=True)
+    train_x = np.expand_dims(train_x, axis=1)
+    test_x, test_y = read_csi_csv(root+"/few_shot_datasets/ReWiS_csv/" + MHz+ "/" + test_dir+"/" ,one_file=True)
+    test_x = np.expand_dims(test_x, axis=1)
+
+    label_encoder = LabelEncoder()
+    train_y = label_encoder.fit_transform(train_y)
+    test_y = label_encoder.transform(test_y) 
+
+    train_x, train_y = torch.tensor(train_x).float(), torch.tensor(train_y)
+    test_x, test_y = torch.tensor(test_x).float(), torch.tensor(test_y)
+
+    train_set = torch.utils.data.TensorDataset(train_x, train_y)
+    test_set = torch.utils.data.TensorDataset(test_x, test_y)
+
+    train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, drop_last=True)
+    test_loader = torch.utils.data.DataLoader(test_set, batch_size=256, shuffle=False)
+
+    return train_loader, test_loader
+
+def load_ReWiS_data_split(root, MHz, train_dir):
+    test_dir = train_dir
+    print('using dataset: ReWiS DATA Split[MHz : {}, train : {}, test : {}]'.format(MHz, train_dir, test_dir))
+
+    # X, y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/train_A1')
+    X, y = read_csi_csv(root+"/few_shot_datasets/ReWiS_csv/" + MHz+ "/" + train_dir+"/" ,one_file=True)
+
+    train_x, test_x, train_y, test_y = train_test_split(X, y, test_size=0.2, random_state=42)
+    train_x = np.expand_dims(train_x, axis=1)
+    test_x = np.expand_dims(test_x, axis=1)
+    label_encoder = LabelEncoder()
+
+    train_y = label_encoder.fit_transform(train_y)
+    test_y = label_encoder.transform(test_y) 
+
+    train_x, train_y = torch.tensor(train_x).float(), torch.tensor(train_y)
+    test_x, test_y = torch.tensor(test_x).float(), torch.tensor(test_y)
+
+    train_set = torch.utils.data.TensorDataset(train_x, train_y)
+    test_set = torch.utils.data.TensorDataset(test_x, test_y)
+
+    train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, drop_last=True)
+    test_loader = torch.utils.data.DataLoader(test_set, batch_size=256, shuffle=False)
+
+    return train_loader, test_loader
+'''
+
 def load_ReWiS_data(root):
     print('using dataset: ReWiS DATA')
     train_x, train_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/train_A1')
     train_x = np.expand_dims(train_x, axis=1)
-    test_x, test_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/test_A3')
+    test_x, test_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/test_A2')
     test_x = np.expand_dims(test_x, axis=1)
 
     label_encoder = LabelEncoder()
@@ -57,17 +108,29 @@ def load_ReWiS_data_split(root):
     test_set = torch.utils.data.TensorDataset(test_x, test_y)
 
     train_loader = torch.utils.data.DataLoader(train_set, batch_size=64, shuffle=True, drop_last=True)
-    test_loader = torch.utils.data.DataLoader(test_set, batch_size=64, shuffle=False)
+    test_loader = torch.utils.data.DataLoader(test_set, batch_size=256, shuffle=False)
 
     return train_loader, test_loader
 
 def load_ReWiS_data_fewshot(root) :
     print('using dataset: ReWiS DATA Few shot')
     train_x, train_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/train_A1')
-    # train_x, train_y = read_csi_csv(root + '/few_shot_datasets/train',one_file=True)
     train_x = np.expand_dims(train_x, axis=1)
     test_x, test_y = read_csi(root + '/few_shot_datasets/ReWis/m1c4_PCA_test_80/test_A3')
+    # test_x, test_y = read_csi(root + '/few_shot_datasets/ReWis/m1c1_PCA_test_80/train_A1')
+    test_x = np.expand_dims(test_x, axis=1)
+
+    return train_x, train_y, test_x, test_y
+
+def load_Home_data_fewshot(root) :
+    print('using dataset: Home DATA Few shot')
+    # train_x, train_y = read_csi_csv(root + '/few_shot_datasets/train',one_file=True)
+    # train_x, train_y = read_csi_csv(root + '/few_shot_datasets/test',one_file=True)
+    train_x, train_y = read_csi_from_pcap(root + '/few_shot_datasets/pcap_copy')
+    train_x = np.expand_dims(train_x, axis=1)
     # test_x, test_y = read_csi_csv(root + '/few_shot_datasets/test',one_file=True)
+    test_x, test_y = read_csi_csv(root + '/few_shot_datasets/test',one_file=True)
+
     test_x = np.expand_dims(test_x, axis=1)
 
     return train_x, train_y, test_x, test_y
@@ -123,14 +186,32 @@ def load_ReWiS_supervised_model(model_name):
     elif model_name == 'ViT':
         print("using model: ViT")
         model = ReWiS_ViT(
-        in_channels=1,  # 입력 채널 수
-        patch_size=[22, 242],  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
-        embed_dim=64,  # 임베딩 차원
-        num_layers=12,  # Transformer 블록 수
-        num_heads=8,  # 멀티헤드 어텐션에서의 헤드 수
-        mlp_dim=4,  # MLP의 확장 비율
-        num_classes=4,  # 분류할 클래스 수
-        in_size=[242, 242]  # 입력 이미지 크기 (가로, 세로)
+            in_channels=1,  # 입력 채널 수
+            patch_size=[22, 242],  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
+            embed_dim=64,  # 임베딩 차원
+            num_layers=12,  # Transformer 블록 수
+            num_heads=8,  # 멀티헤드 어텐션에서의 헤드 수
+            mlp_dim=4,  # MLP의 확장 비율
+            num_classes=4,  # 분류할 클래스 수
+            in_size=[242, 242]  # 입력 이미지 크기 (가로, 세로)
+        
+        # in_channels=1,  # 입력 채널 수
+        # patch_size=[16, 64],  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
+        # embed_dim=64,  # 임베딩 차원
+        # num_layers=12,  # Transformer 블록 수
+        # num_heads=8,  # 멀티헤드 어텐션에서의 헤드 수
+        # mlp_dim=4,  # MLP의 확장 비율
+        # num_classes=4,  # 분류할 클래스 수
+        # in_size=[64, 64]  # 입력 이미지 크기 (가로, 세로)
+
+        # in_channels=1,  # 입력 채널 수
+        # patch_size=[16, 256],  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
+        # embed_dim=64,  # 임베딩 차원
+        # num_layers=12,  # Transformer 블록 수
+        # num_heads=8,  # 멀티헤드 어텐션에서의 헤드 수
+        # mlp_dim=4,  # MLP의 확장 비율
+        # num_classes=4,  # 분류할 클래스 수
+        # in_size=[64, 256]  # 입력 이미지 크기 (가로, 세로)
     )
 
     return model
@@ -256,3 +337,9 @@ def extract_test_sample(n_way, n_support, n_query, datax, datay):
         'n_query': n_query
     })
 
+
+if __name__ == "__main__" :
+    load_ReWiS_data_split
+    input_size = (1,250,90)
+    # print(summary(model, input_size = input_size))
+    print(torchsummary.summary(model, input_size = input_size))

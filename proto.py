@@ -167,17 +167,17 @@ def load_protonet_conv(**kwargs):
 
     return ProtoNet(encoder)
 
-def load_protonet_vit():
+def load_protonet_vit(in_channels, patch_size, embed_dim, num_layers, num_heads, mlp_dim, num_classes, in_size):
 
     encoder = ReWiS_ViT(
-        in_channels=1,  # 입력 채널 수
-        patch_size=[22, 242],  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
-        embed_dim=64,  # 임베딩 차원
-        num_layers=12,  # Transformer 블록 수
-        num_heads=8,  # 멀티헤드 어텐션에서의 헤드 수
-        mlp_dim=4,  # MLP의 확장 비율
-        num_classes=4,  # 분류할 클래스 수
-        in_size=[242, 242]  # 입력 이미지 크기 (가로, 세로)
+        in_channels=in_channels,  # 입력 채널 수
+        patch_size=patch_size,  # 패치 크기 (세로, 가로) 242 = 2 * 11 * 11
+        embed_dim=embed_dim,  # 임베딩 차원
+        num_layers=num_layers,  # Transformer 블록 수
+        num_heads=num_heads,  # 멀티헤드 어텐션에서의 헤드 수
+        mlp_dim=mlp_dim,  # MLP의 확장 비율
+        num_classes=num_classes,  # 분류할 클래스 수
+        in_size=in_size  # 입력 이미지 크기 (가로, 세로)
     )
 
     return ProtoNet(encoder)

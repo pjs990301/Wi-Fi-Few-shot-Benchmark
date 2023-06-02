@@ -1,0 +1,24 @@
+commad :
+  - python
+  - main.py
+  - --learning few shot
+  - -- dataset ReWiS
+
+project : Meta-Transformer
+name: test sweep grid
+
+method : grid
+
+parameters:
+
+    train_support: 
+      values : [5, 10, 15, 20, 25, 30]
+    train_query: 
+      values : [1, 3, 5, 7, 9, 10]
+
+    # ReWiS 정상
+    test_support: 
+      values : [5, 10, 15, 20, 25, 30]
+    test_query : 
+       values : [1, 3, 5, 7, 9, 10]
+
