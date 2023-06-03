@@ -1,13 +1,13 @@
 
 param = {
     'train_way': 4,
-    'train_support': 4,
-    'train_query': 10,
+    'train_support': 5,
+    'train_query': 5,
 
     # ReWiS 정상
-    'test_way': 4,
-    'test_support': 4,
-    'test_query' : 4,
+    # 'test_way': 4,
+    # 'test_support': 4,
+    # 'test_query' : 4,
     
     # 'train_way': 5,
     # 'train_support': 20,
@@ -21,14 +21,14 @@ param = {
     # 'train_support': 20,
     # 'train_query': 5,
     
-    # 'test_way': 4,
-    # 'test_support': 20,
-    # 'test_query':5,
+    'test_way': 5,
+    'test_support': 5,
+    'test_query':5,
 
 
 
-    # 'test_labels': ['Empty', 'Lying', 'Sitting', 'Standing', 'Walking'],
-    'test_labels': ['empty', 'jump', 'stand', 'walk'],
+    'test_labels': ['Empty', 'Lying', 'Sitting', 'Standing', 'Walking'],
+    # 'test_labels': ['empty', 'jump', 'stand', 'walk'],
 
     # model
     'max_epoch' : 7,

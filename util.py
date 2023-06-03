@@ -125,11 +125,14 @@ def load_ReWiS_data_fewshot(root) :
 def load_Home_data_fewshot(root) :
     print('using dataset: Home DATA Few shot')
     # train_x, train_y = read_csi_csv(root + '/few_shot_datasets/train',one_file=True)
-    # train_x, train_y = read_csi_csv(root + '/few_shot_datasets/test',one_file=True)
-    train_x, train_y = read_csi_from_pcap(root + '/few_shot_datasets/pcap_copy')
+    train_x, train_y = read_csi_csv(root + '/few_shot_datasets/train_4',one_file=True)
+    # train_x, train_y = read_csi_from_pcap(root + '/few_shot_datasets/pcap_copy')
     train_x = np.expand_dims(train_x, axis=1)
     # test_x, test_y = read_csi_csv(root + '/few_shot_datasets/test',one_file=True)
-    test_x, test_y = read_csi_csv(root + '/few_shot_datasets/test',one_file=True)
+    # test_x, test_y = read_csi_csv(root + '/few_shot_datasets/test',one_file=True)
+    test_x, test_y = read_csi_csv(root + '/few_shot_datasets/train_5',one_file=True)
+
+    # test_x, test_y = read_csi_from_pcap(root + '/few_shot_datasets/pcap_copy')
 
     test_x = np.expand_dims(test_x, axis=1)
 
