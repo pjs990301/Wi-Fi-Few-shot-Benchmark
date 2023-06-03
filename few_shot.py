@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
 from util import extract_train_sample, extract_test_sample
-
+import wandb
 
 def train(model, learning_rate, train_x, train_y, n_way, n_support, n_query, max_epoch, epoch_size, device):
     """

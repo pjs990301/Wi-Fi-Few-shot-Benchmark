@@ -14,6 +14,7 @@ import os
 import pandas as pd
 from datetime import datetime
 import wandb 
+
 ''' 
 fix seed
 '''
@@ -24,6 +25,9 @@ np.random.seed(0)
 cudnn.benchmark = False
 cudnn.deterministic = True
 random.seed(0)
+
+os.environ["WANDB_AGENT_DISABLE_FLAPPING"] = "true"
+os.environ["WANDB_AGENT_MAX_INITIAL_FAILURES"] = "20"
 
 if __name__ == "__main__":
     root = './Data'
