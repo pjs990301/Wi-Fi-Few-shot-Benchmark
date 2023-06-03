@@ -106,6 +106,9 @@ def test(model, test_x, test_y, n_way, n_support, n_query, test_episode, device)
                     running_acc += output['acc']
                     total_count += 1
         print(conf_mat)
-    avg_acc = running_acc / total_count
+    if total_count == 0:
+        avg_acc = 0
+    else :
+        avg_acc = running_acc / total_count
     print('Test results -- Acc: {:.5f}'.format(avg_acc))
     return (conf_mat / (test_episode * n_query), avg_acc)

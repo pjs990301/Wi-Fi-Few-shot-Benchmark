@@ -32,7 +32,7 @@ def main():
     parser.add_argument('--model',   choices=['LeNet', 'ResNet50',  'RNN', 'LSTM', 'BiLSTM','ViT'])
     parser.add_argument('--learning', choices=['supervised', 'few-shot'], required=True)
     parser.add_argument('--split', default='F', choices=['T','F'])
-    parser.add_argument('--epoch', default=200)
+    parser.add_argument('--epoch', default=100)
     # parser.add_argument('--MHz', default='80MHz')
     # parser.add_argument('--train_env', default='A1_1_4')
     # parser.add_argument('--test_env', default='A3_1_4')
@@ -71,7 +71,7 @@ def main():
             criterion=criterion,
             device=device
         )
-        test_acc, test_loss = supervised.test(
+        test_acc, test_loss, test_accuracy_history, test_loss_history= supervised.test(
             model=model,
             tensor_loader=test_loader,
             criterion=criterion,
@@ -89,11 +89,19 @@ def main():
         train_history = pd.DataFrame({'Epoch': range(0, train_epoch),
                        'Accuracy': train_accuracy_history,
                        'Loss': train_loss_history})
+        
         test_history = pd.DataFrame({'Test Accuracy': [test_acc],
                         'Test Loss': [test_loss]})
         
+        test_history2 = pd.DataFrame({'Test Accuracy': [test_accuracy_history],
+                        'Test Loss': [test_loss_history]})
+        
+
+        
         train_history.to_csv(model_out + 'train.csv', index=False)    
-        test_history.to_csv(model_out + 'test.csv', index=False)   
+        test_history.to_csv(model_out + 'test.csv', index=False)
+        test_history2.to_csv(model_out + 'test_list.csv', index=False)   
+   
         torch.save(model.state_dict(), model_out + 'model.pt')
  
     elif args.learning == 'few-shot':
@@ -193,9 +201,10 @@ def main():
                 f"{param['max_epoch']}_{param['epoch_size']}_{test_acc:.3f}/"
                 )
         print(model_out)
-        # model_out = 'Result/{}/{}/{}/{}/{}/train_s{}_train_q{}_test_s{}_test_q{}/{}/'.format(args.learning, args.dataset, args.model, param['max_epoch'], param['epoch_size'],param['train_support'],param['train_query'],param['test_support'],param['test_query'],test_acc)
         if not os.path.exists(model_out):
             os.makedirs(model_out)
+        # model_out = 'Result/{}/{}/{}/{}/{}/train_s{}_train_q{}_test_s{}_test_q{}/{}/'.format(args.learning, args.dataset, args.model, param['max_epoch'], param['epoch_size'],param['train_support'],param['train_query'],param['test_support'],param['test_query'],test_acc)
+        
         
         train_history = pd.DataFrame({'Epoch': range(0, param['max_epoch']),
                        'Accuracy': train_accuracy_history,
@@ -203,10 +212,10 @@ def main():
         test_history = pd.DataFrame({'Test Accuracy': [test_acc]})
         confusion_matrix = pd.DataFrame(conf_mat.numpy())
         
-        # train_history.to_csv(model_out+ 'train.csv', index=False)
-        # test_history.to_csv(model_out+ 'test.csv',index=False)
-        # confusion_matrix.to_csv(model_out+'confusion.csv', index=True)    
-        # torch.save(model.state_dict(),model_out + 'model.pt')
+        train_history.to_csv(model_out+ 'train.csv', index=False)
+        test_history.to_csv(model_out+ 'test.csv',index=False)
+        confusion_matrix.to_csv(model_out+'confusion.csv', index=True)    
+        torch.save(model.state_dict(),model_out + 'model.pt')
 
 if __name__ == "__main__":
     main()

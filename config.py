@@ -1,13 +1,13 @@
 
 param = {
     'train_way': 4,
-    'train_support': 10,
+    'train_support': 20,
     'train_query': 4,
 
     # ReWiS 정상
     'test_way': 4,
     'test_support': 4,
-    'test_query':4,
+    'test_query' : 4,
     
     # 'train_way': 5,
     # 'train_support': 20,

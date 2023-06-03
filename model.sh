@@ -19,7 +19,7 @@ python main.py --learning supervised --dataset ReWiS --split T --model LSTM
 python main.py --learning supervised --dataset ReWiS --split T --model BiLSTM
 python main.py --learning supervised --dataset ReWiS --split T --model ViT
 
-python main.py --learning few-shot --dataset ReWiS
+# python main.py --learning few-shot --dataset ReWiS
 
 # python main.py --learning few-shot --dataset ReWiS --model ViT
 
