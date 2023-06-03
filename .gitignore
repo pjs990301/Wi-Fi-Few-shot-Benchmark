@@ -2,6 +2,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 *.pt
 wandb/
+Result/
+Result1/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
