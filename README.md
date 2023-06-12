@@ -10,6 +10,7 @@ This repository applies to HAR tasks using wi-fi sensing and tries various ways 
 4. System Architecture
 5. Experiments and evaluations
 6. Conclusion
+7. Reference
 
 <br>
 
@@ -285,3 +286,12 @@ As a result, we have the hassle of having to collect data every time for model l
 To this end, when introducing Meta-Learning, even if you have a small amount of data, you can quickly adapt to the environment and classify Unseen CSIs that are not included in the training dataset. 
 In the case of CNN-based models, the size of each layer must be considered, and as the model goes deeper, the accuracy increases, but the amount of computation increases. 
 Instead, Transformer is introduced and Meta Learning is applied to quickly generalize to a given environment and adapt to a new environment in the future.
+
+## <b> 7. Reference </b>
+1. Wang, Dazhuo, et al. "Robust CSI-based Human Activity Recognition using Roaming Generator." 2020 16th International Conference on Control, Automation, Robotics and Vision (ICARCV). IEEE, 2020.
+2. Yang, Jianfei, et al. "SenseFi: A library and benchmark on deep-learning-empowered WiFi human sensing." Patterns 4.3 (2023).
+3. Bahadori, Niloofar, Jonathan Ashdown, and Francesco Restuccia. "ReWiS: Reliable Wi-Fi sensing through few-shot multi-antenna multi-receiver CSI learning." 2022 IEEE 23rd International Symposium on a World of Wireless, Mobile and Multimedia Networks (WoWMoM). IEEE, 2022.
+4. Xiao, Rui, et al. "Onefi: One-shot recognition for unseen gesture via cots wifi." Proceedings of the 19th ACM Conference on Embedded Networked Sensor Systems. 2021.
+5. Finn, Chelsea, Pieter Abbeel, and Sergey Levine. "Model-agnostic meta-learning for fast adaptation of deep networks." International conference on machine learning. PMLR, 2017.
+6. Dosovitskiy, Alexey, et al. "An image is worth 16x16 words: Transformers for image recognition at scale." arXiv preprint arXiv:2010.11929 (2020).
+7. He, Kaiming, et al. "Deep residual learning for image recognition." Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.
