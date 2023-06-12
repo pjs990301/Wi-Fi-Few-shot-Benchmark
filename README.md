@@ -2,17 +2,17 @@
 <br>
 
 ## <b>Table of Contents</b>
-1. Introduction
-2. Related Work
-3. System Architecture
-4. Experiments and evaluations
-5. Conclusion
-6. Run Code
+1. Run Code
+2. Introduction
+3. Related Work
+4. System Architecture
+5. Experiments and evaluations
+6. Conclusion
 
 
 <br>
 
-## <b>1. Introduction</b>
+## <b>2. Introduction</b>
 Currently, activity recognition technology is applied to various services such as healthcare, smart home, and fitness. 
 Although camera-based and wearable-based technologies have been mainly used in traditional methods, cameras have privacy leakage and limited range of filming problems, and wearables can cause additional costs and inconvenience. 
 Recently, Wi-Fi Sensing, a detection technology using Wi-Fi, is attracting attention. 
@@ -32,8 +32,8 @@ This allows you to build an accurate and reliable Wi-Fi Sensing system.
 
 <br>
 
-## <b>2. Related Work</b>
-### <b>2.1 Channel State Information</b>
+## <b>3. Related Work</b>
+### <b>3.1 Channel State Information</b>
 The CSI is a radio received by the receiver Rx from the transmitter Tx
 It is information on the detailed characteristics of the signal and the state of the channel.
 At this time, the channel is measured at the subcarrier level,
@@ -53,7 +53,7 @@ Channel on the communication link reflecting how the signal is propagated be cha
     <img alt="img.png" src="https://github.com/pjs990301/Wi-Fi-Few-shot-Benchmark/blob/main/fig/img.png?raw=true" width="700"/>
 </div>
 
-### <b>2.2 Few-shot Learning & Meta-Learning</b>
+### <b>3.2 Few-shot Learning & Meta-Learning</b>
 Few-shot Learning is a machine learning technique that generalizes to only a small number of training data and classifies classes that you don't know before. 
 To this end, we introduce a meta-learning approach to learn models for different tasks, and enable them to solve new tasks using a small number of samples. 
 Meta-learning uses data that is divided into support set and query set, which is data that represents the domain of the job and is used for the model to learn. 
@@ -66,7 +66,7 @@ Among the metric-based methods, Prototypical Networks can also predict classes t
 
 <br>
 
-### <b>2.3 Vision Transformer</b>
+### <b>3.3 Vision Transformer</b>
 Vision Transformer introduces a Transformer model in the vision field, demonstrating better performance in image classification tasks. 
 This model is flexible in responding to the length of the input, which is advantageous for various image sizes and ratios, and simplifies the data preprocessing process. 
 It also provides consistent performance regardless of the length of the input to maintain the same level of accuracy. 
@@ -78,7 +78,7 @@ Vision Transformers can be utilized for a variety of image classification tasks 
 
 <br>
 
-## <b>3. System Architecture</b>
+## <b>4. System Architecture</b>
 The figure shows the proposed meta-transformer. 
 Our proposed system can be largely divided into four stages, from model learning to model evaluation, and proceeds in the order of separating learning data, model training, adding new class data, and model evaluation.
 
@@ -88,7 +88,7 @@ Our proposed system can be largely divided into four stages, from model learning
 
 <br>
 
-### <b>3.1 Separating learning data (configuring support set and query set)</b>
+### <b>4.1 Separating learning data (configuring support set and query set)</b>
 Each data point ($x_i$, $y_i$) consists of an input $x$ and its class label $y$. 
 When you define the number of classes in an episode as $N_c$ and set the number of classes in a training dataset to $K$, random sampling creates a support set and query set consisting of $S_k$ and $Q_k$. 
 At this point, the $RandomSample(S, N)$ function is used to select $N$ elements uniformly and randomly without redundancy in the set $S$. 
@@ -97,8 +97,8 @@ Here, $N_c$ means the number of support data per class, and $N_q$ means the numb
 
 <br>
 
-### <b>3.2 Model Train </b>
-#### <b>3.2.1 Transformer</b>
+### <b>4.2 Model Train </b>
+#### <b>4.2.1 Transformer</b>
 Figure shows the process of embedding CSI data by dividing it by patch based on the structure of the vision transformer. 
 In order to generate input data of the same structure, the transformer splits the CSI data of each support set into patch units and flattens each patch to change it into a vector value. 
 Each vector is subjected to a linear operation and embedding. 
@@ -109,7 +109,7 @@ Attention is performed in the encoder, and as a result, the extracted feature ve
 </div>
 <br>
 
-### <b>3.2.2 Prototypical Network</b>
+### <b>4.2.2 Prototypical Network</b>
 Prototype calculation is performed with the feature vector extracted by Transformer encoding.    
 $$c_k = \frac{1}{\left\lvert S_k \right\rvert} \sum_{\quad (x_i, y_i)} \text{Encoder}(x_i) $$
 As a result, the prototype forms a distribution representing each class in the embedding space. 
@@ -118,7 +118,7 @@ $$p_{\emptyset}(y = k|x) = \frac{\exp\left(-d\left(\text{Encoder}(x), c_k\right)
 
 <br>
 
-### <b>3.3 Add New Class Data</b>
+### <b>4.3 Add New Class Data</b>
 Meta-learning can quickly adapt to new tasks through learned training data, where classes of test data do not necessarily have to be included in the training data class. 
 This is because meta-learning uses pre-meta information related to previously learned classes for classification of new classes. 
 Determining the corresponding Unseen CSI data is also important because there are many types of Unseen CSI that are not included in the data class collected for training in actual Wi-Fi Sensing. 
@@ -126,25 +126,25 @@ Including Unseen CSI in existing training data, support set and query set are se
 
 <br>
 
-### <b>3.4 Model evaluation</b>
+### <b>4.4 Model evaluation</b>
 Based on encoders learned from training data that do not include Unseen CSI, a prototype network is formed for the support set and query set containing Unseen. 
 The model is evaluated by comparing the results of the corresponding prototype network with the labels of the real class.
 
 <br>
 
-## <b>4. Experiments and evaluations</b>
-### <b>4.1 Dataset</b>
+## <b>5. Experiments and evaluations</b>
+### <b>5.1 Dataset</b>
 Two datasets were used for the dataset experiment, and the experiment was conducted based on the ReWiS dataset and the collected dataset. 
 The contents of the data set can be found in Table
 <br>
-#### <b>4.1.1 ReWiS Dataset</b>
+#### <b>5.1.1 ReWiS Dataset</b>
 Nexmon CSI was used as a CSI extraction tool to use the Asus RTAC86U Wi-Fi router and collect CSI. 
 The state of the 802.11ac channel at 5 GHz was measured at three locations using the Nexmon CSI tool. 
 Among the 256 subcarriers of the 80 MHz channel, the guard and null subcarrier values are removed and 242x242 CSI data is provided through subcarrier compression. 
 CSIs of activities such as walking, running, and writing were collected from various places (office, meeting room, and lecture room). 
 This paper conducted an experiment on two of the three environments, an office and a classroom, and the number of antennas of Rx collected was set to four.
 <br>
-#### <b>4.1.2 Collection Datasets</b>
+#### <b>5.1.2 Collection Datasets</b>
 Using the Nexmon CSI tool, the state of the 802.11ac channel was measured at 5 GHz, and the state of the channel collected 64 subcarriers of 20 MHz. 
 Unlike ReWiS, we constructed the dataset to resemble the real-world scenario using all 64 subcarriers collected.
 
@@ -185,8 +185,8 @@ Unlike ReWiS, we constructed the dataset to resemble the real-world scenario usi
 
 <br>
 
-### <b>4.2 Experiment</b>
-#### <b>4.2.1 Experiment 1: Meta Learning Necessity</b>
+### <b>5.2 Experiment</b>
+#### <b>5.2.1 Experiment 1: Meta Learning Necessity</b>
 The above description describes experimental results that validate Wi-Fi sensing using supervised learning models such as CNN and RNN. 
 Experiments used the ReWiS (Realistic Wireless Sensing) dataset, the training phase used the office dataset, and the testing phase used 20% of the office dataset to evaluate accuracy. 
 Additionally, we used the classroom dataset to verify the generalization performance of the model. 
@@ -202,7 +202,7 @@ Therefore, solving these problems may require other approaches, such as meta-lea
 
 <br>
 
-#### <b>4.2.2 Experiment 2: Applying Meta Learning</b>
+#### <b>5.2.2 Experiment 2: Applying Meta Learning</b>
 Meta-learning allows models to learn different tasks and build on their learning experiences to quickly adapt to new tasks and gain generalization skills. 
 Accordingly, the model was learned using office data from the ReWiS dataset, and in Experiment 1, the generalization performance of the model was verified using ReWiS's classroom data. 
 In this experiment, we conducted an experiment by changing the size of the support set and query set considering the characteristics of meta-learning. 
@@ -240,7 +240,7 @@ This demonstrates that applying ViT to meta-learning results in superior perform
 </div>
 
     
-#### <b>4.2.3 Experiment 3: Unseen Class</b>
+#### <b>5.2.3 Experiment 3: Unseen Class</b>
 Few-shot Learning is a method of learning models to have generalized classification capabilities for classes not included in the learning dataset. 
 In this experiment, we conducted an experiment on Unseen classes that are not in the learning dataset to evaluate the generalization performance of Few-shot Learning. 
 In the course of learning, the learning was conducted except for sit class data, and in the course of testing, the test was conducted including both the training dataset and sit class data.
@@ -254,7 +254,7 @@ The ViT model learned through Meta-Learning performed an accurate classification
 
 <br>
 
-## <b> 5. Conclusion</b>
+## <b> 6. Conclusion</b>
 It is important to have sufficient amount of data in learning the model. 
 However, the collection of data can be costly and time-consuming. 
 In the Wi-Fi CSI, the value of data included is changed according to the surrounding environment. 
