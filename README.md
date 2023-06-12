@@ -93,6 +93,8 @@ At this point, the $RandomSample(S, N)$ function is used to select $N$ elements 
 The support set($S_k$) is composed of  $RandomSample(D_{vk}, N_s)$, and the query set($Q_k$) is composed of $RandomSample(D_{vk} \setminus S_k, N_q)$. 
 Here, $N_c$ means the number of support data per class, and $N_q$ means the number of query data per class.
 
+<br>
+
 ### 3.2 Model Train 
 #### 3.2.1 Transformer
 Figure shows the process of embedding CSI data by dividing it by patch based on the structure of the vision transformer. 
@@ -103,6 +105,7 @@ Attention is performed in the encoder, and as a result, the extracted feature ve
 <div align="center">
     <img alt="Architecture.png" src="https://github.com/pjs990301/Wi-Fi-Few-shot-Benchmark/blob/main/fig/Transformer.png?raw=true" width="700">
 </div>
+<br>
 
 ### 3.2.2 Prototypical Network
 Prototype calculation is performed with the feature vector extracted by Transformer encoding.    
@@ -111,19 +114,127 @@ As a result, the prototype forms a distribution representing each class in the e
 The prototype network determines a class for query points ($𝑥$) based on Softmax for the distance from the embedding space to the prototype.
 $$p_{\emptyset}(y = k|x) = \frac{\exp\left(-d\left(\text{Encoder}(x), c_k\right)\right)}{\sum_{k'} \exp\left(-d\left(\text{Encoder}(x), c_{k'}\right)\right)}$$
 
+<br>
+
 ### 3.3 Add New Class Data
 Meta-learning can quickly adapt to new tasks through learned training data, where classes of test data do not necessarily have to be included in the training data class. 
 This is because meta-learning uses pre-meta information related to previously learned classes for classification of new classes. 
 Determining the corresponding Unseen CSI data is also important because there are many types of Unseen CSI that are not included in the data class collected for training in actual Wi-Fi Sensing. 
 Including Unseen CSI in existing training data, support set and query set are separated and tested.
 
+<br>
+
 ### 3.4 Model evaluation
 Based on encoders learned from training data that do not include Unseen CSI, a prototype network is formed for the support set and query set containing Unseen. 
 The model is evaluated by comparing the results of the corresponding prototype network with the labels of the real class.
+
+<br>
 
 ## 4. Experiments and evaluations
 ### 4.1 Dataset
 Two datasets were used for the dataset experiment, and the experiment was conducted based on the ReWiS dataset and the collected dataset. 
 The contents of the data set can be found in Table
+<br>
+#### 4.1.1 ReWiS Dataset
+Nexmon CSI was used as a CSI extraction tool to use the Asus RTAC86U Wi-Fi router and collect CSI. 
+The state of the 802.11ac channel at 5 GHz was measured at three locations using the Nexmon CSI tool. 
+Among the 256 subcarriers of the 80 MHz channel, the guard and null subcarrier values are removed and 242x242 CSI data is provided through subcarrier compression. 
+CSIs of activities such as walking, running, and writing were collected from various places (office, meeting room, and lecture room). 
+This paper conducted an experiment on two of the three environments, an office and a classroom, and the number of antennas of Rx collected was set to four.
+<br>
+#### 4.1.2 Collection Datasets
+Using the Nexmon CSI tool, the state of the 802.11ac channel was measured at 5 GHz, and the state of the channel collected 64 subcarriers of 20 MHz. 
+Unlike ReWiS, we constructed the dataset to resemble the real-world scenario using all 64 subcarriers collected.
 
-#### 4.1.1
+<br>
+
+<table align="center" style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <th style="text-align:center;">Datasets </th>
+    <th style="text-align:center;">ReWiS</th>
+    <th style="text-align:center;">Collection Datasets</th>
+  </tr>
+  <tr>
+    <td style="text-align:center;">CSI Tool</td>
+    <td style="text-align:center;">Nexmon CSI</td>
+    <td style="text-align:center;">Nexmon CSI</td>
+  </tr>
+  <tr>
+    <td style="text-align:center;">Channel Information</td>
+    <td style="text-align:center;">5GHz 80MHz</td>
+    <td style="text-align:center;">5GHz 20MHz</td>
+  </tr>
+  <tr>
+    <td style="text-align:center;">Activity number</td>
+    <td style="text-align:center;">4</td>
+    <td style="text-align:center;">5</td>
+  </tr>
+  <tr>
+    <td style="text-align:center;">Activity names</td>
+    <td style="text-align:center;">empty, jump, stand, walk</td>
+    <td style="text-align:center;">empty, lie, sit, stand, walk</td>
+  </tr>
+  <tr>
+    <td style="text-align:center;">CSI Size</td>
+    <td style="text-align:center;">242 * 242</td>
+    <td style="text-align:center;">64 * 64</td>
+  </tr>
+</table>
+
+<br>
+
+### 4.2 Experiment
+#### 4.2.1 Experiment 1: Meta Learning Necessity
+The above description describes experimental results that validate Wi-Fi sensing using supervised learning models such as CNN and RNN. 
+Experiments used the ReWiS (Realistic Wireless Sensing) dataset, the training phase used the office dataset, and the testing phase used 20% of the office dataset to evaluate accuracy. 
+Additionally, we used the classroom dataset to verify the generalization performance of the model. 
+Experimental results show that for data in the same environment, all models performed accurate predictions for a given behavior. 
+However, in other environments, the model did not perform predictions of behavior normally. 
+In particular, the BiLSTM model showed the largest accuracy reduction rate, resulting in a performance degradation of approximately 60%. 
+These results confirm that the supervised learning model learns the relationship between the input data and the class, so performance is significantly degraded when the environment changes.
+Therefore, solving these problems may require other approaches, such as meta-learning.
+
+<div align="center">
+    <img alt="Architecture.png" src="https://github.com/pjs990301/Wi-Fi-Few-shot-Benchmark/blob/main/fig/need_meta.png?raw=true" width="500">
+</div>
+
+<br>
+
+#### 4.2.2 Experiment 2: Applying Meta Learning
+Meta-learning allows models to learn different tasks and build on their learning experiences to quickly adapt to new tasks and gain generalization skills. 
+Accordingly, the model was learned using office data from the ReWiS dataset, and in Experiment 1, the generalization performance of the model was verified using ReWiS's classroom data. 
+In this experiment, we conducted an experiment by changing the size of the support set and query set considering the characteristics of meta-learning. 
+The support set and query set sizes were set to 4 at the time of training, the training dataset and the test dataset had the same class, and the impact of the Unseen class was not considered. 
+In this experiment, the performance was compared by applying CNN-based ProtoNet and Attention-based Vision Transformer (ViT).
+
+As a result, the ViT model has about 23 times more parameters to learn than the ProtoNet model, takes a long time to infer, but has about 25 times less computation itself. 
+Therefore, the ViT model may be advantageous for deployment in environments where weight reduction is required. 
+Figure shows the results of ProtoNet and ViT models conducting learning with office datasets and testing on classroom datasets. 
+Both models achieved 100% accuracy in training, and tests showed that the ViT model performed less well than the ProtoNet model. 
+This demonstrates that applying ViT to meta-learning results in superior performance over ProtoNet and improves the generalization performance of the model using meta-learning.
+
+
+<table align="center" style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <th style="text-align:center;">Model</th>
+    <th style="text-align:center;">Params (M)</th>
+    <th style="text-align:center;">FLOPS (G)</th>
+    <th style="text-align:center;">Elapsed time (s)</th>
+  </tr>
+  <tr>
+    <td style="text-align:center;">ViT</td>
+    <td style="text-align:center;">0.94</td>
+    <td style="text-align:center;">0.011</td>
+    <td style="text-align:center;">0.006</td>
+  </tr>
+  <tr>
+    <td style="text-align:center;">ProtoNet</td>
+    <td style="text-align:center;">0.04</td>
+    <td style="text-align:center;">0.276</td>
+      <td style="text-align:center;">0.001</td>
+  </tr>
+</table>
+
+<div align="center">
+    <img alt="Architecture.png" src="https://github.com/pjs990301/Wi-Fi-Few-shot-Benchmark/blob/main/fig/meta.png?raw=true" width="500">
+</div>
