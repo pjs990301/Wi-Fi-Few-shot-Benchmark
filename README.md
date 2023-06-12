@@ -89,5 +89,5 @@ Our proposed system can be largely divided into four stages, from model learning
 Each data point ($x_i$, $y_i$) consists of an input $x$ and its class label $y$. 
 When you define the number of classes in an episode as $N_c$ and set the number of classes in a training dataset to $K$, random sampling creates a support set and query set consisting of $S_k$ and $Q_k$. 
 At this point, the $RandomSample(S, N)$ function is used to select $N$ elements uniformly and randomly without redundancy in the set $S$. 
-The support set($S_k$) is composed of  $RandomSample(D_{vk}, N_s)$, and the query set($Q_k$) is composed of $RandomSample(D_{vk} \\ S_k, N_q)$. 
+The support set($S_k$) is composed of  $RandomSample(D_{vk}, N_s)$, and the query set($Q_k$) is composed of $RandomSample(D_{vk} \setminus S_k, N_q)$. 
 Here, $N_c$ means the number of support data per class, and $N_q$ means the number of query data per class.
