@@ -6,7 +6,7 @@
 2. Related Work
 3. System Architecture
 4. Experiments and evaluations
-5. 
+5. Conclusion
 
 <br>
 
@@ -206,13 +206,11 @@ Accordingly, the model was learned using office data from the ReWiS dataset, and
 In this experiment, we conducted an experiment by changing the size of the support set and query set considering the characteristics of meta-learning. 
 The support set and query set sizes were set to 4 at the time of training, the training dataset and the test dataset had the same class, and the impact of the Unseen class was not considered. 
 In this experiment, the performance was compared by applying CNN-based ProtoNet and Attention-based Vision Transformer (ViT).
-
 As a result, the ViT model has about 23 times more parameters to learn than the ProtoNet model, takes a long time to infer, but has about 25 times less computation itself. 
 Therefore, the ViT model may be advantageous for deployment in environments where weight reduction is required. 
 Figure shows the results of ProtoNet and ViT models conducting learning with office datasets and testing on classroom datasets. 
 Both models achieved 100% accuracy in training, and tests showed that the ViT model performed less well than the ProtoNet model. 
 This demonstrates that applying ViT to meta-learning results in superior performance over ProtoNet and improves the generalization performance of the model using meta-learning.
-
 
 <table align="center" style="margin-left: auto; margin-right: auto;">
   <tr>
@@ -234,7 +232,31 @@ This demonstrates that applying ViT to meta-learning results in superior perform
       <td style="text-align:center;">0.001</td>
   </tr>
 </table>
-
+<br>
 <div align="center">
     <img alt="Architecture.png" src="https://github.com/pjs990301/Wi-Fi-Few-shot-Benchmark/blob/main/fig/meta.png?raw=true" width="500">
 </div>
+
+    
+#### 4.2.3 Experiment 3: Unseen Class
+Few-shot Learning is a method of learning models to have generalized classification capabilities for classes not included in the learning dataset. 
+In this experiment, we conducted an experiment on Unseen classes that are not in the learning dataset to evaluate the generalization performance of Few-shot Learning. 
+In the course of learning, the learning was conducted except for sit class data, and in the course of testing, the test was conducted including both the training dataset and sit class data.
+We plotted a chaos matrix that visualized the experimental results. 
+In the experiment, the training was conducted by setting the sizes of both the training support set and the training set to 5, and the sizes of the test support set and the test query set were set to 10 and 5, respectively.
+The ViT model learned through Meta-Learning performed an accurate classification of Unseen CSIs not included in the learning.
+
+<div align="center">
+    <img alt="Architecture.png" src="https://github.com/pjs990301/Wi-Fi-Few-shot-Benchmark/blob/main/fig/confusion.png?raw=true" width="500">
+</div>
+
+<br>
+
+## 5. Conclusion
+It is important to have sufficient amount of data in learning the model. 
+However, the collection of data can be costly and time-consuming. 
+In the Wi-Fi CSI, the value of data included is changed according to the surrounding environment. 
+As a result, we have the hassle of having to collect data every time for model learning. 
+To this end, when introducing Meta-Learning, even if you have a small amount of data, you can quickly adapt to the environment and classify Unseen CSIs that are not included in the training dataset. 
+In the case of CNN-based models, the size of each layer must be considered, and as the model goes deeper, the accuracy increases, but the amount of computation increases. 
+Instead, Transformer is introduced and Meta Learning is applied to quickly generalize to a given environment and adapt to a new environment in the future.
