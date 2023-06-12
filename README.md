@@ -287,6 +287,8 @@ To this end, when introducing Meta-Learning, even if you have a small amount of 
 In the case of CNN-based models, the size of each layer must be considered, and as the model goes deeper, the accuracy increases, but the amount of computation increases. 
 Instead, Transformer is introduced and Meta Learning is applied to quickly generalize to a given environment and adapt to a new environment in the future.
 
+<br>
+
 ## <b> 7. Reference </b>
 1. Wang, Dazhuo, et al. "Robust CSI-based Human Activity Recognition using Roaming Generator." 2020 16th International Conference on Control, Automation, Robotics and Vision (ICARCV). IEEE, 2020.
 2. Yang, Jianfei, et al. "SenseFi: A library and benchmark on deep-learning-empowered WiFi human sensing." Patterns 4.3 (2023).
