@@ -5,7 +5,8 @@
 1. Introduction
 2. Related Work
 3. System Architecture
-4. 
+4. Experiments and evaluations
+5. 
 
 <br>
 
@@ -105,7 +106,24 @@ Attention is performed in the encoder, and as a result, the extracted feature ve
 
 ### 3.2.2 Prototypical Network
 Prototype calculation is performed with the feature vector extracted by Transformer encoding.    
-$$
-c_k = \frac{1}{|S_k|} \sum \text{Encoder}(x_i) \quad (x_i, y_i)
-$$
+$$c_k = \frac{1}{\left\lvert S_k \right\rvert} \sum_{\quad (x_i, y_i)} \text{Encoder}(x_i) $$
+As a result, the prototype forms a distribution representing each class in the embedding space. 
+The prototype network determines a class for query points ($𝑥$) based on Softmax for the distance from the embedding space to the prototype.
+$$p_{\emptyset}(y = k|x) = \frac{\exp\left(-d\left(\text{Encoder}(x), c_k\right)\right)}{\sum_{k'} \exp\left(-d\left(\text{Encoder}(x), c_{k'}\right)\right)}$$
 
+### 3.3 Add New Class Data
+Meta-learning can quickly adapt to new tasks through learned training data, where classes of test data do not necessarily have to be included in the training data class. 
+This is because meta-learning uses pre-meta information related to previously learned classes for classification of new classes. 
+Determining the corresponding Unseen CSI data is also important because there are many types of Unseen CSI that are not included in the data class collected for training in actual Wi-Fi Sensing. 
+Including Unseen CSI in existing training data, support set and query set are separated and tested.
+
+### 3.4 Model evaluation
+Based on encoders learned from training data that do not include Unseen CSI, a prototype network is formed for the support set and query set containing Unseen. 
+The model is evaluated by comparing the results of the corresponding prototype network with the labels of the real class.
+
+## 4. Experiments and evaluations
+### 4.1 Dataset
+Two datasets were used for the dataset experiment, and the experiment was conducted based on the ReWiS dataset and the collected dataset. 
+The contents of the data set can be found in Table
+
+#### 4.1.1
