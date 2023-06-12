@@ -1,4 +1,5 @@
 # Wi-Fi-Few-shot-Benchmark
+This repository applies to HAR tasks using wi-fi sensing and tries various ways to resolve domain dependencies
 <br>
 
 ## <b>Table of Contents</b>
@@ -9,8 +10,31 @@
 5. Experiments and evaluations
 6. Conclusion
 
-
 <br>
+
+## <b>1. Run Code</b>
+### <b>1.1 Requirements</b>
+- python == 3.8
+- pytorch
+- torchvision
+- numpy
+- pandas
+
+> You must install 'pytorch' and 'torchvision'
+<pre><code>pip install pytorch torchvision</code></pre>
+
+### <b>1.2 Dataset</b>
+In the case of ReWiS datasets, please refer to the [link](https://github.com/niloobah/ReWiS), and the collected datasets are private,  
+so if you need them, please email us at Pull request or p990301@gachon.ac.kr
+
+
+### <b>1.3 Run</b>
+If you want to do an experiment on all models and datasets
+<pre><code> sh model.sh</code></pre>
+
+
+
+
 
 ## <b>2. Introduction</b>
 Currently, activity recognition technology is applied to various services such as healthcare, smart home, and fitness. 
