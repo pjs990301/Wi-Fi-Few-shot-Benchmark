@@ -85,9 +85,27 @@ Our proposed system can be largely divided into four stages, from model learning
 
 <br>
 
-### Separating learning data (configuring support set and query set)
+### 3.1 Separating learning data (configuring support set and query set)
 Each data point ($x_i$, $y_i$) consists of an input $x$ and its class label $y$. 
 When you define the number of classes in an episode as $N_c$ and set the number of classes in a training dataset to $K$, random sampling creates a support set and query set consisting of $S_k$ and $Q_k$. 
 At this point, the $RandomSample(S, N)$ function is used to select $N$ elements uniformly and randomly without redundancy in the set $S$. 
 The support set($S_k$) is composed of  $RandomSample(D_{vk}, N_s)$, and the query set($Q_k$) is composed of $RandomSample(D_{vk} \setminus S_k, N_q)$. 
 Here, $N_c$ means the number of support data per class, and $N_q$ means the number of query data per class.
+
+### 3.2 Model Train 
+#### 3.2.1 Transformer
+Figure shows the process of embedding CSI data by dividing it by patch based on the structure of the vision transformer. 
+In order to generate input data of the same structure, the transformer splits the CSI data of each support set into patch units and flattens each patch to change it into a vector value. 
+Each vector is subjected to a linear operation and embedding. 
+To remember the location of each patch, a Position embedding token is attached and the matrix is used as the encoder's input value. 
+Attention is performed in the encoder, and as a result, the extracted feature vector is derived based on the relationship between the time patches given as input.
+<div align="center">
+    <img alt="Architecture.png" src="https://github.com/pjs990301/Wi-Fi-Few-shot-Benchmark/blob/main/fig/Transformer.png?raw=true" width="700">
+</div>
+
+### 3.2.2 Prototypical Network
+Prototype calculation is performed with the feature vector extracted by Transformer encoding.    
+$$
+c_k = \frac{1}{|S_k|} \sum \text{Encoder}(x_i) \quad (x_i, y_i)
+$$
+
